@@ -1,0 +1,6 @@
+<manifest package="com.gmuniz.fancyspinner"
+          xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <library android:name="FancySpinner" />
+
+</manifest>
