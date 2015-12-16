@@ -3,19 +3,19 @@ package com.gmuniz.widget;
 import android.content.Context;
 import android.support.v7.widget.AppCompatSpinner;
 import android.util.AttributeSet;
-import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
 import android.widget.ListPopupWindow;
+import android.widget.PopupWindow;
 
 public class FancySpinner extends AppCompatSpinner
-	implements AdapterView.OnItemSelectedListener, AdapterView.OnItemClickListener {
+	implements AdapterView.OnItemSelectedListener, PopupWindow.OnDismissListener {
 
 	private ListPopupWindow mPopupWindow;
-	private ListAdapter mAdapter;
+	private OnItemSelectedListener mOnItemSelectedListener;
 
 	public FancySpinner(Context context) {
 		super(context);
@@ -36,22 +36,20 @@ public class FancySpinner extends AppCompatSpinner
 		// Load attributes
 
 		final Context context = getContext();
-
 		final String[] strings = new String[] {
 				"Action", "Adventure", "Animation", "Children", "Comedy", "Documentary", "Drama",
 				"Foreign", "History", "Independent", "Romance", "Sci-Fi", "Television", "Thriller"
 		};
 
-		mAdapter = new ArrayAdapter<>(context,
+		final ArrayAdapter<String> mAdapter = new ArrayAdapter<>(context,
 				android.R.layout.simple_list_item_multiple_choice, strings);
 
-		// TODO: Set transition / margins
 		mPopupWindow = new ListPopupWindow(context, attrs, defStyle);
-		mPopupWindow.setModal(true);
 		mPopupWindow.setAdapter(mAdapter);
+		mPopupWindow.setModal(true);
 		mPopupWindow.setAnchorView(this);
 		mPopupWindow.setOnItemSelectedListener(this);
-		mPopupWindow.setOnItemClickListener(this);
+		mPopupWindow.setOnDismissListener(this);
 		mPopupWindow.setPromptPosition(ListPopupWindow.POSITION_PROMPT_ABOVE);
 	}
 
@@ -59,29 +57,16 @@ public class FancySpinner extends AppCompatSpinner
 	protected void onMeasure(final int widthMeasureSpec, final int heightMeasureSpec) {
 		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
-		mPopupWindow.setWidth(getWidth() - 40);
-	}
+		final int margin = Math.round(TypedValue.applyDimension(
+				TypedValue.COMPLEX_UNIT_DIP, 20, getResources().getDisplayMetrics()));
 
-	public void setAdapter(final ListAdapter adapter) {
-		mAdapter = adapter;
-	}
-
-	@Override
-	public void onItemSelected(final AdapterView<?> parent,
-	                           final View view, final int position, final long id) {
-
-		// TODO: Store selected items.
-	}
-
-	@Override
-	public void onNothingSelected(final AdapterView<?> parent) {
-		// Nothing to do.
+		mPopupWindow.setWidth(getWidth() - margin);
 	}
 
 	@Override
 	public boolean performClick() {
-
 		mPopupWindow.show();
+
 		post(new Runnable() {
 			@Override
 			public void run() {
@@ -93,8 +78,32 @@ public class FancySpinner extends AppCompatSpinner
 	}
 
 	@Override
-	public void onItemClick(final AdapterView<?> parent,
-	                        final View view, final int position, final long id) {
+	public void onItemSelected(final AdapterView<?> parent,
+	                           final View view, final int position, final long id) {
+
+		// TODO: Store selected items.
+
+		if (mOnItemSelectedListener != null) {
+			mOnItemSelectedListener.onItemSelected(parent, view, position, id);
+		}
+	}
+
+	@Override
+	public void onNothingSelected(final AdapterView<?> parent) {
+		if (mOnItemSelectedListener != null) {
+			mOnItemSelectedListener.onNothingSelected(parent);
+		}
+	}
+
+	@Override
+	public void setOnItemSelectedListener(final OnItemSelectedListener listener) {
+		super.setOnItemSelectedListener(listener);
+
+		mOnItemSelectedListener = listener;
+	}
+
+	@Override
+	public void onDismiss() {
 
 	}
 }
