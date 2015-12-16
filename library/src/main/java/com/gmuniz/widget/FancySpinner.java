@@ -1,6 +1,7 @@
 package com.gmuniz.widget;
 
 import android.content.Context;
+import android.support.v7.widget.AppCompatSpinner;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -9,15 +10,12 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListPopupWindow;
-import android.widget.Spinner;
-import android.widget.TextView;
 
-public class FancySpinner extends Spinner
+public class FancySpinner extends AppCompatSpinner
 	implements AdapterView.OnItemSelectedListener, AdapterView.OnItemClickListener {
 
 	private ListPopupWindow mPopupWindow;
 	private ListAdapter mAdapter;
-	private int mHeight;
 
 	public FancySpinner(Context context) {
 		super(context);
@@ -38,6 +36,7 @@ public class FancySpinner extends Spinner
 		// Load attributes
 
 		final Context context = getContext();
+
 		final String[] strings = new String[] {
 				"Action", "Adventure", "Animation", "Children", "Comedy", "Documentary", "Drama",
 				"Foreign", "History", "Independent", "Romance", "Sci-Fi", "Television", "Thriller"
@@ -47,22 +46,20 @@ public class FancySpinner extends Spinner
 				android.R.layout.simple_list_item_multiple_choice, strings);
 
 		// TODO: Set transition / margins
-		mPopupWindow = new ListPopupWindow(context);
+		mPopupWindow = new ListPopupWindow(context, attrs, defStyle);
 		mPopupWindow.setModal(true);
 		mPopupWindow.setAdapter(mAdapter);
 		mPopupWindow.setAnchorView(this);
 		mPopupWindow.setOnItemSelectedListener(this);
 		mPopupWindow.setOnItemClickListener(this);
 		mPopupWindow.setPromptPosition(ListPopupWindow.POSITION_PROMPT_ABOVE);
-		mPopupWindow.setWidth(ListPopupWindow.WRAP_CONTENT);
 	}
 
 	@Override
 	protected void onMeasure(final int widthMeasureSpec, final int heightMeasureSpec) {
 		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
-		mHeight = getMeasuredHeight();
-		mPopupWindow.setVerticalOffset(0 - mHeight);
+		mPopupWindow.setWidth(getWidth() - 40);
 	}
 
 	public void setAdapter(final ListAdapter adapter) {
@@ -73,7 +70,6 @@ public class FancySpinner extends Spinner
 	public void onItemSelected(final AdapterView<?> parent,
 	                           final View view, final int position, final long id) {
 
-		view.setSelected(true);
 		// TODO: Store selected items.
 	}
 
@@ -100,6 +96,5 @@ public class FancySpinner extends Spinner
 	public void onItemClick(final AdapterView<?> parent,
 	                        final View view, final int position, final long id) {
 
-		view.setSelected(!view.isSelected());
 	}
 }
