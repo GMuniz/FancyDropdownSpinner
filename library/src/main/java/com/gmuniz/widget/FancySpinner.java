@@ -7,15 +7,18 @@ import android.util.TypedValue;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
+import android.widget.ListAdapter;
 import android.widget.ListPopupWindow;
 import android.widget.PopupWindow;
+import android.widget.SpinnerAdapter;
 
 public class FancySpinner extends AppCompatSpinner
 	implements AdapterView.OnItemSelectedListener, PopupWindow.OnDismissListener {
 
 	private ListPopupWindow mPopupWindow;
 	private OnItemSelectedListener mOnItemSelectedListener;
+
+	private ListAdapter mListAdapter;
 
 	public FancySpinner(Context context) {
 		super(context);
@@ -33,19 +36,8 @@ public class FancySpinner extends AppCompatSpinner
 	}
 
 	private void init(AttributeSet attrs, int defStyle) {
-		// Load attributes
-
 		final Context context = getContext();
-		final String[] strings = new String[] {
-				"Action", "Adventure", "Animation", "Children", "Comedy", "Documentary", "Drama",
-				"Foreign", "History", "Independent", "Romance", "Sci-Fi", "Television", "Thriller"
-		};
-
-		final ArrayAdapter<String> mAdapter = new ArrayAdapter<>(context,
-				android.R.layout.simple_list_item_multiple_choice, strings);
-
 		mPopupWindow = new ListPopupWindow(context, attrs, defStyle);
-		mPopupWindow.setAdapter(mAdapter);
 		mPopupWindow.setModal(true);
 		mPopupWindow.setAnchorView(this);
 		mPopupWindow.setOnItemSelectedListener(this);
@@ -104,6 +96,18 @@ public class FancySpinner extends AppCompatSpinner
 
 	@Override
 	public void onDismiss() {
+
+	}
+
+	@Override
+	public void setAdapter(final SpinnerAdapter adapter) {
+		super.setAdapter(adapter);
+
+		if (adapter instanceof ListAdapter) {
+			mListAdapter = (ListAdapter) adapter;
+
+			mPopupWindow.setAdapter(mListAdapter);
+		}
 
 	}
 }
