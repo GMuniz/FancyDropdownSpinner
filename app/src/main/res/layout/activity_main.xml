@@ -8,10 +8,10 @@
     tools:context="com.gmuniz.fancydropdownspinner.MainActivity">
 
     <com.gmuniz.widget.FancySpinner
+        android:id="@+id/fancy_spinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="?android:attr/spinnerStyle"
-        />
+        style="?android:attr/spinnerStyle" />
 
     <Spinner
         android:id="@+id/spinner"
